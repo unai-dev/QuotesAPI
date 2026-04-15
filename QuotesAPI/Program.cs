@@ -12,6 +12,14 @@ builder.Services.AddAutoMapper(cfg =>
     cfg.CreateMap<CreateQuoteDTO, Quote>();
 });
 
+builder.Services.AddCors(o =>
+{
+    o.AddDefaultPolicy(cors =>
+    {
+        cors.AllowAnyMethod().AllowAnyOrigin().AllowAnyHeader();
+    });
+});
+
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(
     o => o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -28,6 +36,7 @@ using (var scope = app.Services.CreateScope())
 
 
 // ENDPOINT de prueba
+app.UseCors();
 app.MapGet("/", () => "Hello World!");
 app.MapControllers();
 app.Run();

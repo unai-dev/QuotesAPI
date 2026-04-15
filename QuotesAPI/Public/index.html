@@ -1,0 +1,808 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Frases del día</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet" />
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #F5F2EC;
+            --surface: #EDEAE2;
+            --ink: #1A1A18;
+            --ink2: #6B6860;
+            --ink3: #A8A59F;
+            --accent: #C4531E;
+            --accent2: #E8A87C;
+            --border: #D8D4CB;
+            --serif: 'DM Serif Display', Georgia, serif;
+            --sans: 'DM Sans', sans-serif;
+            --radius: 12px;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--ink);
+            font-family: var(--sans);
+            font-size: 15px;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* ---- HEADER ---- */
+        header {
+            border-bottom: 1px solid var(--border);
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+            position: sticky;
+            top: 0;
+            background: var(--bg);
+            z-index: 10;
+        }
+
+        .logo {
+            font-family: var(--serif);
+            font-size: 1.4rem;
+            letter-spacing: -0.02em;
+            color: var(--ink);
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--accent);
+            font-style: italic;
+        }
+
+        nav {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        nav button {
+            background: none;
+            border: none;
+            font-family: var(--sans);
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--ink2);
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all .18s;
+            letter-spacing: 0.01em;
+        }
+
+        nav button:hover {
+            background: var(--surface);
+            color: var(--ink);
+        }
+
+        nav button.active {
+            background: var(--ink);
+            color: var(--bg);
+        }
+
+        /* ---- PAGES ---- */
+        .page {
+            display: none;
+            animation: fadeUp .35s ease both;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(14px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ---- HERO (página principal) ---- */
+        .hero {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 5rem 2rem 3rem;
+            text-align: center;
+        }
+
+        .hero-eyebrow {
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ink3);
+            margin-bottom: 2rem;
+        }
+
+        .quote-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 3.5rem 4rem;
+            position: relative;
+            min-height: 220px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity .3s;
+        }
+
+        .quote-card.loading {
+            opacity: .4;
+            pointer-events: none;
+        }
+
+        .quote-mark {
+            font-family: var(--serif);
+            font-size: 6rem;
+            color: var(--accent2);
+            line-height: 0;
+            position: absolute;
+            top: 2.2rem;
+            left: 2.5rem;
+            opacity: .5;
+            user-select: none;
+        }
+
+        .quote-text {
+            font-family: var(--serif);
+            font-size: 1.65rem;
+            line-height: 1.4;
+            letter-spacing: -0.01em;
+            color: var(--ink);
+            max-width: 600px;
+            margin-bottom: 1.5rem;
+        }
+
+        .quote-text em {
+            color: var(--accent);
+            font-style: italic;
+        }
+
+        .quote-meta {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            font-size: 13px;
+            color: var(--ink2);
+        }
+
+        .quote-author {
+            font-weight: 500;
+            color: var(--ink);
+        }
+
+        .quote-category {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2px 12px;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--ink2);
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            font-family: var(--sans);
+            font-size: 14px;
+            font-weight: 500;
+            padding: 10px 24px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all .18s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary:hover {
+            background: #B04418;
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: none;
+            color: var(--ink);
+            border: 1px solid var(--border);
+            font-family: var(--sans);
+            font-size: 14px;
+            font-weight: 400;
+            padding: 10px 24px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all .18s;
+        }
+
+        .btn-secondary:hover {
+            background: var(--surface);
+            border-color: var(--ink3);
+        }
+
+        /* filtro categoría hero */
+        .category-filter {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .cat-chip {
+            background: none;
+            border: 1px solid var(--border);
+            font-family: var(--sans);
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--ink2);
+            padding: 5px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all .15s;
+            letter-spacing: 0.02em;
+        }
+
+        .cat-chip:hover {
+            border-color: var(--ink3);
+            color: var(--ink);
+        }
+
+        .cat-chip.active {
+            background: var(--ink);
+            color: var(--bg);
+            border-color: var(--ink);
+        }
+
+        /* ---- LISTA ---- */
+        .list-page {
+            max-width: 780px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .list-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .list-title {
+            font-family: var(--serif);
+            font-size: 2rem;
+            letter-spacing: -0.02em;
+        }
+
+        .list-count {
+            font-size: 13px;
+            color: var(--ink3);
+        }
+
+        .list-filters {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .quote-row {
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.25rem 1.5rem;
+            background: #fff;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+            transition: border-color .15s;
+            animation: fadeUp .3s ease both;
+        }
+
+        .quote-row:hover {
+            border-color: var(--ink3);
+        }
+
+        .quote-row-text {
+            font-family: var(--serif);
+            font-size: 1.05rem;
+            line-height: 1.45;
+            color: var(--ink);
+            margin-bottom: 6px;
+        }
+
+        .quote-row-meta {
+            font-size: 12px;
+            color: var(--ink3);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn-delete {
+            background: none;
+            border: 1px solid transparent;
+            color: var(--ink3);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            flex-shrink: 0;
+            transition: all .15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-delete:hover {
+            background: #FEF2F2;
+            color: #DC2626;
+            border-color: #FECACA;
+        }
+
+        /* ---- FORMULARIO CREAR ---- */
+        .form-page {
+            max-width: 560px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .form-title {
+            font-family: var(--serif);
+            font-size: 2rem;
+            letter-spacing: -0.02em;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--ink2);
+            margin-bottom: 6px;
+        }
+
+        input[type=text],
+        textarea,
+        select {
+            width: 100%;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-family: var(--sans);
+            font-size: 15px;
+            color: var(--ink);
+            padding: 10px 14px;
+            outline: none;
+            transition: border-color .15s;
+            appearance: none;
+        }
+
+        input[type=text]:focus,
+        textarea:focus,
+        select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(196, 83, 30, .1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 110px;
+            line-height: 1.6;
+        }
+
+        .form-submit {
+            margin-top: 1.75rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        /* ---- TOAST ---- */
+        #toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: var(--ink);
+            color: var(--bg);
+            font-size: 13px;
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 20px;
+            z-index: 999;
+            transition: transform .3s cubic-bezier(.34, 1.56, .64, 1);
+            white-space: nowrap;
+        }
+
+        #toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        #toast.error {
+            background: #DC2626;
+        }
+
+        /* ---- EMPTY ---- */
+        .empty {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--ink3);
+        }
+
+        .empty-title {
+            font-family: var(--serif);
+            font-size: 1.4rem;
+            color: var(--ink2);
+            margin-bottom: .5rem;
+        }
+
+        /* ---- SPINNER ---- */
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, .3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin .6s linear infinite;
+            display: none;
+        }
+
+        .spinner.visible {
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ---- RESPONSIVE ---- */
+        @media (max-width: 600px) {
+            .quote-card {
+                padding: 2.5rem 1.75rem;
+            }
+
+            .quote-text {
+                font-size: 1.35rem;
+            }
+
+            .quote-mark {
+                font-size: 4rem;
+                top: 1.5rem;
+                left: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <a class="logo" href="#">Frases <span>del día</span></a>
+        <nav>
+            <button class="active" data-page="home">Inicio</button>
+            <button data-page="list">Explorar</button>
+            <button data-page="create">Añadir</button>
+        </nav>
+    </header>
+
+    <!-- ===== PÁGINA INICIO ===== -->
+    <div class="page active" id="page-home">
+        <div class="hero">
+            <p class="hero-eyebrow">Frase del momento</p>
+
+            <div class="category-filter" id="hero-cats">
+                <button class="cat-chip active" data-cat="">Todas</button>
+            </div>
+
+            <div class="quote-card" id="quote-card">
+                <span class="quote-mark">"</span>
+                <p class="quote-text" id="quote-text">Cargando...</p>
+                <div class="quote-meta">
+                    <span class="quote-author" id="quote-author"></span>
+                    <span class="quote-category" id="quote-category"></span>
+                </div>
+            </div>
+
+            <div class="hero-actions">
+                <button class="btn-primary" id="btn-random" onclick="loadRandom()">
+                    <div class="spinner" id="spinner-random"></div>
+                    <span>Nueva frase</span>
+                </button>
+                <button class="btn-secondary" onclick="goPage('create')">Añadir la tuya</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== PÁGINA EXPLORAR ===== -->
+    <div class="page" id="page-list">
+        <div class="list-page">
+            <div class="list-header">
+                <h1 class="list-title">Todas las frases</h1>
+                <span class="list-count" id="list-count"></span>
+            </div>
+            <div class="list-filters" id="list-cats">
+                <button class="cat-chip active" data-cat="">Todas</button>
+            </div>
+            <div id="quotes-list"></div>
+        </div>
+    </div>
+
+    <!-- ===== PÁGINA CREAR ===== -->
+    <div class="page" id="page-create">
+        <div class="form-page">
+            <h1 class="form-title">Añadir una frase</h1>
+
+            <div class="form-group">
+                <label for="f-text">Frase</label>
+                <textarea id="f-text" placeholder="Escribe la frase aquí..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="f-author">Autor</label>
+                <input type="text" id="f-author" placeholder="Nombre del autor" />
+            </div>
+            <div class="form-group">
+                <label for="f-category">Categoría</label>
+                <input type="text" id="f-category" placeholder="Ej: Motivación, Vida, Programación..." />
+            </div>
+
+            <div class="form-submit">
+                <button class="btn-primary" id="btn-submit" onclick="createQuote()">
+                    <div class="spinner" id="spinner-create"></div>
+                    <span>Guardar frase</span>
+                </button>
+                <button class="btn-secondary" onclick="goPage('home')">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+        // ── CONFIG ──────────────────────────────────────────────
+        const API = 'https://localhost:7252';
+
+        // ── ESTADO ──────────────────────────────────────────────
+        let allQuotes = [];
+        let heroCategory = '';
+        let listCategory = '';
+
+        // ── NAVEGACIÓN ──────────────────────────────────────────
+        function goPage(name) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+            document.getElementById('page-' + name).classList.add('active');
+            const navBtn = document.querySelector(`nav button[data-page="${name}"]`);
+            if (navBtn) navBtn.classList.add('active');
+            if (name === 'list') loadList(listCategory);
+        }
+
+        document.querySelectorAll('nav button').forEach(btn => {
+            btn.addEventListener('click', () => goPage(btn.dataset.page));
+        });
+
+        // ── TOAST ────────────────────────────────────────────────
+        function toast(msg, isError = false) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = isError ? 'error' : '';
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2800);
+        }
+
+        // ── SPINNER ──────────────────────────────────────────────
+        function setLoading(spinnerId, btnId, on) {
+            const spinner = document.getElementById(spinnerId);
+            const btn = document.getElementById(btnId);
+            if (spinner) spinner.classList.toggle('visible', on);
+            if (btn) btn.disabled = on;
+        }
+
+        // ── CATEGORÍAS ───────────────────────────────────────────
+        function buildCategoryChips(categories, containerId, activeCat, onSelect) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            const chips = [{ label: 'Todas', value: '' }, ...categories.map(c => ({ label: c, value: c }))];
+            container.innerHTML = chips.map(c => `
+        <button class="cat-chip ${c.value === activeCat ? 'active' : ''}" data-cat="${c.value}">${c.label}</button>
+        `).join('');
+            container.querySelectorAll('.cat-chip').forEach(chip => {
+                chip.addEventListener('click', () => {
+                    container.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+                    chip.classList.add('active');
+                    onSelect(chip.dataset.cat);
+                });
+            });
+        }
+
+        // ── CARGAR RANDOM ────────────────────────────────────────
+        async function loadRandom(category = heroCategory) {
+            const card = document.getElementById('quote-card');
+            setLoading('spinner-random', 'btn-random', true);
+            card.classList.add('loading');
+            try {
+                // Corregido: el backend usa el parámetro "category"
+                const url = category ? `${API}/quotes/random?category=${encodeURIComponent(category)}` : `${API}/quotes/random`;
+                const res = await fetch(url);
+                if (!res.ok) throw new Error();
+                const q = await res.json();
+
+                // El mapeo depende de si tu JSON devuelve camelCase (estándar) o PascalCase
+                document.getElementById('quote-text').textContent = q.text || q.Text;
+                document.getElementById('quote-author').textContent = q.author || q.Author;
+                document.getElementById('quote-category').textContent = q.category || q.Category;
+            } catch {
+                toast('No hay frases en esta categoría o el servidor está caído.', true);
+            } finally {
+                setLoading('spinner-random', 'btn-random', false);
+                card.classList.remove('loading');
+            }
+        }
+
+        // ── CARGAR LISTA ─────────────────────────────────────────
+        async function loadList(category = '') {
+            const container = document.getElementById('quotes-list');
+            if (!container) return;
+            container.innerHTML = '<div class="empty"><p>Cargando...</p></div>';
+            try {
+                // Corregido: el backend usa el parámetro "category"
+                const url = category ? `${API}/quotes?category=${encodeURIComponent(category)}` : `${API}/quotes`;
+                const res = await fetch(url);
+                if (!res.ok) throw new Error();
+                allQuotes = await res.json();
+
+                const cats = [...new Set(allQuotes.map(q => q.category || q.Category))].sort();
+                buildCategoryChips(cats, 'list-cats', listCategory, (cat) => {
+                    listCategory = cat;
+                    renderList(cat ? allQuotes.filter(q => (q.category || q.Category) === cat) : allQuotes);
+                });
+                buildCategoryChips(cats, 'hero-cats', heroCategory, (cat) => {
+                    heroCategory = cat;
+                    loadRandom(cat);
+                });
+
+                renderList(category ? allQuotes.filter(q => (q.category || q.Category) === category) : allQuotes);
+            } catch {
+                container.innerHTML = '<div class="empty"><p class="empty-title">No se pudo conectar con la API</p><p>Verifica el puerto 7252 y CORS.</p></div>';
+            }
+        }
+
+        function renderList(quotes) {
+            const container = document.getElementById('quotes-list');
+            const countEl = document.getElementById('list-count');
+            if (countEl) countEl.textContent = `${quotes.length} frases`;
+
+            if (!quotes.length) {
+                container.innerHTML = '<div class="empty"><p class="empty-title">No hay frases aquí</p></div>';
+                return;
+            }
+
+            container.innerHTML = quotes.map(q => {
+                const id = q.id || q.Id;
+                const text = q.text || q.Text;
+                const author = q.author || q.Author;
+                const category = q.category || q.Category;
+
+                return `
+        <div class="quote-row" id="row-${id}">
+            <div>
+                <p class="quote-row-text">"${text}"</p>
+                <div class="quote-row-meta">
+                    <span>${author}</span>
+                    <span class="quote-category">${category}</span>
+                </div>
+            </div>
+            <button class="btn-delete" title="Eliminar" onclick="deleteQuote(${id})">✕</button>
+        </div>
+        `;
+            }).join('');
+        }
+
+        // ── CREAR ────────────────────────────────────────────────
+        async function createQuote() {
+            const text = document.getElementById('f-text').value.trim();
+            const author = document.getElementById('f-author').value.trim() || 'Anónimo';
+            const category = document.getElementById('f-category').value.trim() || 'General';
+
+            if (!text) { toast('Escribe la frase antes de guardar.', true); return; }
+
+            setLoading('spinner-create', 'btn-submit', true);
+            try {
+                const res = await fetch(`${API}/quotes`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text, author, category })
+                });
+                if (!res.ok) throw new Error();
+
+                document.getElementById('f-text').value = '';
+                document.getElementById('f-author').value = '';
+                document.getElementById('f-category').value = '';
+
+                toast('Frase añadida correctamente.');
+                goPage('list');
+            } catch {
+                toast('Error al guardar la frase.', true);
+            } finally {
+                setLoading('spinner-create', 'btn-submit', false);
+            }
+        }
+
+        // ── ELIMINAR ─────────────────────────────────────────────
+        async function deleteQuote(id) {
+            if (!confirm('¿Eliminar esta frase?')) return;
+            try {
+                const res = await fetch(`${API}/quotes/${id}`, { method: 'DELETE' });
+                if (!res.ok) throw new Error();
+
+                const row = document.getElementById(`row-${id}`);
+                if (row) row.remove();
+
+                allQuotes = allQuotes.filter(q => (q.id || q.Id) !== id);
+                const countEl = document.getElementById('list-count');
+                if (countEl) countEl.textContent = `${allQuotes.length} frases`;
+
+                toast('Frase eliminada.');
+            } catch {
+                toast('Error al eliminar la frase.', true);
+            }
+        }
+
+        // ── INICIO ───────────────────────────────────────────────
+        loadRandom();
+        loadList();
+    </script>
+</body>
+
+</html>

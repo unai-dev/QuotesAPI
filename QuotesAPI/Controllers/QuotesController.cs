@@ -8,7 +8,7 @@ using QuotesAPI.Models;
 namespace QuotesAPI.Controllers
 {
     [ApiController]
-    [Route("v1/api/quotes")]
+    [Route("quotes")]
     public class QuotesController: ControllerBase
     {
         private readonly AppDbContext db;
