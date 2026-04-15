@@ -36,7 +36,7 @@ Proyecto Full Stack compuesto por una API REST con **ASP.NET Core** y un fronten
 
 ### 🌐 Frontend
 
-1.  Abrir la carpeta del frontend en **VS Code**.
+1.  Abrir la carpeta public en **VS Code**.
 2.  Instalar la extensión **Live Server**.
 3.  Click derecho en `index.html` → **Open with Live Server**.
 """
