@@ -672,13 +672,11 @@
             setLoading('spinner-random', 'btn-random', true);
             card.classList.add('loading');
             try {
-                // Corregido: el backend usa el parámetro "category"
                 const url = category ? `${API}/quotes/random?category=${encodeURIComponent(category)}` : `${API}/quotes/random`;
                 const res = await fetch(url);
                 if (!res.ok) throw new Error();
                 const q = await res.json();
 
-                // El mapeo depende de si tu JSON devuelve camelCase (estándar) o PascalCase
                 document.getElementById('quote-text').textContent = q.text || q.Text;
                 document.getElementById('quote-author').textContent = q.author || q.Author;
                 document.getElementById('quote-category').textContent = q.category || q.Category;
@@ -696,7 +694,6 @@
             if (!container) return;
             container.innerHTML = '<div class="empty"><p>Cargando...</p></div>';
             try {
-                // Corregido: el backend usa el parámetro "category"
                 const url = category ? `${API}/quotes?category=${encodeURIComponent(category)}` : `${API}/quotes`;
                 const res = await fetch(url);
                 if (!res.ok) throw new Error();

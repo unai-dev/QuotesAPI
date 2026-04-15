@@ -1,10 +1,7 @@
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using QuotesAPI.Data;
 using QuotesAPI.DTOs;
 using QuotesAPI.Models;
-using QuotesAPI.Utils;
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAutoMapper(cfg =>
